@@ -1,2 +1,0 @@
-- STM32 parse sensor data and reformat to proper units
-- STM32 log data in .csv file

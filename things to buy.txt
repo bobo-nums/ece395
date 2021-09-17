@@ -1,4 +1,0 @@
-sd card module socket - https://www.sunfounder.com/products/sd-card-reader
-micro sd card w/ full size adapter - https://www.adafruit.com/product/1294
-voltage/current sense w/ spi - https://www.ti.com/product/LMP92064
-hall effect rotation sensor - https://p3america.com/erck-05spi-360/
