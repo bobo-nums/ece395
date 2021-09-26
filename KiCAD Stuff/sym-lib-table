@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name ina239-q1)(type Legacy)(uri ${KIPRJMOD}/ina239-q1.lib)(options "")(descr ""))
+  (lib (name micro_sd_card_adafruit)(type Legacy)(uri ${KIPRJMOD}/micro_sd_card_adafruit.lib)(options "")(descr ""))
+)
