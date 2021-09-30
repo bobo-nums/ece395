@@ -106,7 +106,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-    myprintf("\r\n~ SD card demo by kiwih ~\r\n\r\n");
   	HAL_Delay(1000); //a short delay is important to let the SD card settle
 
 	//some variables for FatFs
