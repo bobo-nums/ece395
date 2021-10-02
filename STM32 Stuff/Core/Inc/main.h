@@ -64,6 +64,7 @@ void Error_Handler(void);
 #define SD_CS_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */
 #define SD_SPI_HANDLE hspi3
+#define INA_SPI_HANDLE hspi2
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
