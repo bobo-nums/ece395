@@ -26,6 +26,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include "ina239.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -109,6 +110,9 @@ int main(void)
   MX_SPI3_Init();
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
+
+//  INA_SPI_init(&hspi2);
+
 //  HAL_Delay(1000); //a short delay is important to let the SD card settle
 //
 //	//some variables for FatFs
@@ -160,7 +164,7 @@ int main(void)
 //	myprintf("f_gets error (%i)\r\n", fres);
 //	}
 //
-//	//Be a tidy kiwi - don't forget to close your file!
+//	// close file
 //	f_close(&fil);
 //
 //	//Now let's try and write a file "write.txt"
@@ -181,10 +185,10 @@ int main(void)
 //	myprintf("f_write error (%i)\r\n");
 //	}
 //
-//	//Be a tidy kiwi - don't forget to close your file!
+//	// close file
 //	f_close(&fil);
 //
-//	//We're done, so de-mount the drive
+//	// de-mount the drive
 //	f_mount(NULL, "", 0);
 
 
@@ -197,6 +201,12 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  uint8_t data = 0xF2;
+	  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+	  HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);
+	  while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+	  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
+	  HAL_Delay(1000);
 //	  myprintf("test");
 //	  HAL_Delay(500);
   }
@@ -265,7 +275,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -303,7 +313,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
