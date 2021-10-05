@@ -1,3 +1,3 @@
 ina239.c:11:6:INA_SPI_init	24	static
-ina239.c:23:6:INA_SPI_read	40	dynamic
-ina239.c:34:6:INA_SPI_write	32	static
+ina239.c:24:6:INA_SPI_read	40	dynamic
+ina239.c:35:6:INA_SPI_write	32	static

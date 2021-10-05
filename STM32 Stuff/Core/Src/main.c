@@ -201,12 +201,25 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  uint8_t data = 0xF2;
-	  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
-	  HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);
-	  while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-	  HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
-	  HAL_Delay(1000);
+	  INA_SPI_init(&hspi2);
+
+		// format data bytes
+//		uint8_t data[3];
+//		data[0] = (CONFIG >> 2) | INA_WRITE;
+//		data[1] = 0x80;
+//		data[2] = 0xF2;
+//
+//		HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
+//		HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);					// send 3 bytes
+//		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+//		HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
+
+//	  uint8_t data = 0xF2;
+//	  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
+//	  HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);
+//	  while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+//	  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);
+	  HAL_Delay(500);
 //	  myprintf("test");
 //	  HAL_Delay(500);
   }
