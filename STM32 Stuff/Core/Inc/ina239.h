@@ -47,6 +47,6 @@
 
 void INA_SPI_init(SPI_HandleTypeDef* spi);
 void INA_SPI_write(SPI_HandleTypeDef* spi, uint8_t addr, uint16_t* buf);
-void INA_SPI_read(SPI_HandleTypeDef* spi, uint8_t addr, uint32_t* buf, uint32_t count);
+void INA_SPI_read(SPI_HandleTypeDef* spi, uint8_t addr, uint8_t* buf, uint32_t count);
 
 #endif /* INC_INA239_H_ */

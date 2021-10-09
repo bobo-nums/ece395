@@ -16,20 +16,18 @@ void INA_SPI_init(SPI_HandleTypeDef* spi){
 	data[2] = 0x00;
 
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
-	HAL_SPI_Transmit(spi, &data, sizeof(data), 100);					// send 3 bytes
+	HAL_SPI_Transmit(spi, &data[0], sizeof(data), 100);					// send 3 bytes
 	while(HAL_SPI_GetState(spi) != HAL_SPI_STATE_READY);
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
 }
 
-void INA_SPI_read(SPI_HandleTypeDef* spi, uint8_t addr, uint32_t* buf, uint32_t count){
-	uint8_t data[count];
+void INA_SPI_read(SPI_HandleTypeDef* spi, uint8_t addr, uint8_t* buf, uint32_t count){
 	addr = (addr << 2) | INA_READ;										// format 1st byte
-
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
-	HAL_SPI_Transmit(spi, &addr, 1, 100);								// send 1 byte
-	HAL_SPI_Receive(spi, &data[0], count, 100);								// receive data
+	HAL_SPI_Transmit(spi, &addr, sizeof(addr), 100);					// send 1 byte
+	HAL_SPI_Receive(spi, buf, count, 100);								// receive data
+	while(HAL_SPI_GetState(spi) != HAL_SPI_STATE_READY);
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
-	*buf = (uint32_t)data;
 }
 
 void INA_SPI_write(SPI_HandleTypeDef* spi, uint8_t addr, uint16_t* buf){
@@ -40,7 +38,8 @@ void INA_SPI_write(SPI_HandleTypeDef* spi, uint8_t addr, uint16_t* buf){
 	data[2] = (uint8_t)*buf;
 
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
-	HAL_SPI_Transmit(spi, &data[0], 3, 100);						// send 3 byte data packet
+	HAL_SPI_Transmit(spi, &data[0], sizeof(data), 100);					// send 3 byte data packet
+	while(HAL_SPI_GetState(spi) != HAL_SPI_STATE_READY);
 	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
 }
 

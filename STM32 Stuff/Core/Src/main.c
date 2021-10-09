@@ -201,27 +201,22 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  INA_SPI_init(&hspi2);
 
-		// format data bytes
-//		uint8_t data[3];
-//		data[0] = (CONFIG >> 2) | INA_WRITE;
-//		data[1] = 0x80;
-//		data[2] = 0xF2;
-//
-//		HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
-//		HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);					// send 3 bytes
-//		while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-//		HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
+// testing init
+//	INA_SPI_init(&hspi2);
 
-//	  uint8_t data = 0xF2;
-//	  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
-//	  HAL_SPI_Transmit(&hspi2, &data, sizeof(data), 100);
-//	  while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
-//	  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);
-	  HAL_Delay(500);
-//	  myprintf("test");
-//	  HAL_Delay(500);
+// testing write
+//	uint16_t data;
+//	data = 0x80F2;
+//	INA_SPI_write(&hspi2, 0xA, &data);
+
+// testing read
+	uint8_t buf[2];
+	INA_SPI_read(&hspi2, VBUS, &buf[0], sizeof(buf));
+	myprintf("data: %d", buf);
+
+	HAL_Delay(500);
+//	myprintf("test");
   }
   /* USER CODE END 3 */
 }
