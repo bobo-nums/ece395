@@ -1,0 +1,2 @@
+rtc.c:10:6:rtc_set_time	40	static
+rtc.c:31:6:rtc_get_time	24	static

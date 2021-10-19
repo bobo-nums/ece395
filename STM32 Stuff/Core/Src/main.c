@@ -28,6 +28,7 @@
 #include <stdarg.h>
 #include "ina239.h"
 #include "sd.h"
+#include "rtc.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +46,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+RTC_HandleTypeDef hrtc;
+
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi3;
 
@@ -59,6 +62,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_RTC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -75,6 +79,43 @@ void myprintf(const char *fmt, ...) {
   int len = strlen(buffer);
   HAL_UART_Transmit(&huart2, (uint8_t*)buffer, len, -1);
 }
+
+// void get_time(void){
+//  RTC_DateTypeDef gDate; 
+//  RTC_TimeTypeDef gTime; 
+// /* Get the RTC current Time */ 
+//  HAL_RTC_GetTime(&hrtc, &gTime, RTC_FORMAT_BIN); 
+// /* Get the RTC current Date */ 
+//  HAL_RTC_GetDate(&hrtc, &gDate, RTC_FORMAT_BIN); 
+//  myprintf("time: %02d:%02d:%02d", gTime.Hours, gTime.Minutes, gTime.Seconds);
+
+// /* Display time Format: hh:mm:ss */ 
+//  sprintf((char*)time,"%02d:%02d:%02d",gTime.Hours, gTime.Minutes, gTime.Seconds); 
+// /* Display date Format: dd-mm-yy */ 
+//  sprintf((char*)date,"%02d-%02d-%2d",gDate.Date, gDate.Month, 2000 + gDate.Year); 
+// }
+// void set_time (void){
+//   RTC_TimeTypeDef sTime;
+//   RTC_DateTypeDef sDate;
+//   sTime.Hours = 0x00; // set hours
+//   sTime.Minutes = 0x00; // set minutes
+//   sTime.Seconds = 0x00; // set seconds
+//   sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+//   sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+//   if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+//   {
+//     Error_Handler();
+//   }
+//   sDate.WeekDay = RTC_WEEKDAY_MONDAY; //  day
+//   sDate.Month = RTC_MONTH_JANUARY; //  month
+//   sDate.Date = 0x00; // date
+//   sDate.Year = 0x00; // year
+//   if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+//   {
+// 	  Error_Handler();
+//   }
+//   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x32F2); // backup register
+// }
 /* USER CODE END 0 */
 
 /**
@@ -108,39 +149,30 @@ int main(void)
   MX_USART2_UART_Init();
   MX_SPI3_Init();
   MX_SPI2_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
 
 //  INA_SPI_init(&hspi2);
 
-	FATFS FatFs; 	// Fatfs handle
-  SD_mount(&FatFs);
+  //  FATFS FatFs; 	// Fatfs handle
+  //  SD_mount(&FatFs);
 
-//	//Let's get some statistics from the SD card
-//	DWORD free_clusters, free_sectors, total_sectors;
-//
-//	FATFS* getFreeFs;
-//
-//	fres = f_getfree("", &free_clusters, &getFreeFs);
-//	if (fres != FR_OK) {
-//	myprintf("f_getfree error (%i)\r\n", fres);
-//	while(1);
-//	}
-//
-//	//Formula comes from ChaN's documentation
-//	total_sectors = (getFreeFs->n_fatent - 2) * getFreeFs->csize;
-//	free_sectors = free_clusters * getFreeFs->csize;
-//
-//	myprintf("SD card stats:\r\n%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", total_sectors / 2, free_sectors / 2);
+  // char buf[256] = "Time, MPH, V_Bat, testingtesting\nnewline?";
+  // int btw = strlen(buf);
+  //  UINT bytesWrote;
+  //  bytesWrote = SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, buf, btw);
+  //  myprintf("Wrote %i bytes to 'write.csv'!\r\n", bytesWrote);
 
-  BYTE readBuf[30];
-  UINT bytesWrote;
-  strncpy((char*)readBuf, "a new file is cool!", 19);
-  bytesWrote = SD_write("write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, readBuf, 19);
-	myprintf("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
+  // char newbuf[] = "dont overwrite";
+  // btw = strlen(newbuf);
+  //  bytesWrote = SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_APPEND, newbuf, btw);
+  //  myprintf("Wrote %i bytes to 'write.csv'!\r\n", bytesWrote);
 
-  SD_unmount();
+  //  SD_unmount();
 
-
+  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
+	  rtc_set_time(&hrtc);
+  }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -150,7 +182,11 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
+    RTC_TimeTypeDef mytime;
+    RTC_DateTypeDef mydate;
+	  rtc_get_time(&hrtc, &mydate, &mytime);
+    myprintf("time: %02d:%02d:%02d", mytime.Hours, mytime.Minutes, mytime.Seconds);
+	  HAL_Delay(1000);
 // testing init
 //	INA_SPI_init(&hspi2);
 
@@ -196,9 +232,10 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -217,6 +254,68 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 0x0;
+  sTime.Minutes = 0x0;
+  sTime.Seconds = 0x0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 0x1;
+  sDate.Year = 0x0;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+  HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x32F2); // backup register 
+  /* USER CODE END RTC_Init 2 */
+
 }
 
 /**

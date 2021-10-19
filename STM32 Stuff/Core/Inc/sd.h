@@ -20,6 +20,8 @@
 
 void SD_mount(FATFS *FatFs);
 UINT SD_write(const TCHAR* path, BYTE mode, const char* buf, UINT btw);
+// some function to write new col, new row?
+UINT SD_csv_write_row();
 void SD_unmount();
 
 #endif /* INC_SD_H_ */
