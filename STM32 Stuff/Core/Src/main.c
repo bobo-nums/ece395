@@ -27,6 +27,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include "ina239.h"
+#include "sd.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +51,6 @@ SPI_HandleTypeDef hspi3;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,7 +74,6 @@ void myprintf(const char *fmt, ...) {
 
   int len = strlen(buffer);
   HAL_UART_Transmit(&huart2, (uint8_t*)buffer, len, -1);
-
 }
 /* USER CODE END 0 */
 
@@ -113,20 +112,9 @@ int main(void)
 
 //  INA_SPI_init(&hspi2);
 
-//  HAL_Delay(1000); //a short delay is important to let the SD card settle
-//
-//	//some variables for FatFs
-//	FATFS FatFs; 	//Fatfs handle
-//	FIL fil; 		//File handle
-//	FRESULT fres; //Result after operations
-//
-//	//Open the file system
-//	fres = f_mount(&FatFs, "", 1); //1=mount now
-//	if (fres != FR_OK) {
-//	myprintf("f_mount error (%i)\r\n", fres);
-//	while(1);
-//	}
-//
+	FATFS FatFs; 	// Fatfs handle
+  SD_mount(&FatFs);
+
 //	//Let's get some statistics from the SD card
 //	DWORD free_clusters, free_sectors, total_sectors;
 //
@@ -143,53 +131,14 @@ int main(void)
 //	free_sectors = free_clusters * getFreeFs->csize;
 //
 //	myprintf("SD card stats:\r\n%10lu KiB total drive space.\r\n%10lu KiB available.\r\n", total_sectors / 2, free_sectors / 2);
-//
-//	//Now let's try to open file "test.txt"
-//	fres = f_open(&fil, "test.txt", FA_READ);
-//	if (fres != FR_OK) {
-//	myprintf("f_open error (%i)\r\n");
-//	while(1);
-//	}
-//	myprintf("I was able to open 'test.txt' for reading!\r\n");
-//
-//	//Read 30 bytes from "test.txt" on the SD card
-//	BYTE readBuf[30];
-//
-//	//We can either use f_read OR f_gets to get data out of files
-//	//f_gets is a wrapper on f_read that does some string formatting for us
-//	TCHAR* rres = f_gets((TCHAR*)readBuf, 30, &fil);
-//	if(rres != 0) {
-//	myprintf("Read string from 'test.txt' contents: %s\r\n", readBuf);
-//	} else {
-//	myprintf("f_gets error (%i)\r\n", fres);
-//	}
-//
-//	// close file
-//	f_close(&fil);
-//
-//	//Now let's try and write a file "write.txt"
-//	fres = f_open(&fil, "write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS);
-//	if(fres == FR_OK) {
-//	myprintf("I was able to open 'write.txt' for writing\r\n");
-//	} else {
-//	myprintf("f_open error (%i)\r\n", fres);
-//	}
-//
-//	//Copy in a string
-//	strncpy((char*)readBuf, "a new file is made!", 19);
-//	UINT bytesWrote;
-//	fres = f_write(&fil, readBuf, 19, &bytesWrote);
-//	if(fres == FR_OK) {
-//	myprintf("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
-//	} else {
-//	myprintf("f_write error (%i)\r\n");
-//	}
-//
-//	// close file
-//	f_close(&fil);
-//
-//	// de-mount the drive
-//	f_mount(NULL, "", 0);
+
+  BYTE readBuf[30];
+  UINT bytesWrote;
+  strncpy((char*)readBuf, "a new file is cool!", 19);
+  bytesWrote = SD_write("write.txt", FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, readBuf, 19);
+	myprintf("Wrote %i bytes to 'write.txt'!\r\n", bytesWrote);
+
+  SD_unmount();
 
 
   /* USER CODE END 2 */
@@ -207,16 +156,26 @@ int main(void)
 
 // testing write
 //	uint16_t data;
-//	data = 0x80F2;
-//	INA_SPI_write(&hspi2, 0xA, &data);
+//	data = 0x8000;
+//	INA_SPI_write(&hspi2, CONFIG, &data);
 
 // testing read
-	uint8_t buf[2];
-	INA_SPI_read(&hspi2, VBUS, &buf[0], sizeof(buf));
-	myprintf("data: %d", buf);
+//	uint8_t buf[2];
+//	INA_SPI_read(&hspi2, DIETEMP, &buf[0], sizeof(buf));
+//	myprintf("data: %d	", *buf);
 
-	HAL_Delay(500);
-//	myprintf("test");
+//	uint8_t buf[2];
+//	uint8_t addr = (VBUS << 2) | INA_READ;
+//	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);	// pull CS low
+//	HAL_SPI_Transmit(&hspi2, &addr, 1, 100);					// send 1 byte
+//	while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+//	HAL_SPI_Receive(&hspi2, &buf[0], 2, 100);								// receive data
+//	while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+////	HAL_SPI_TransmitReceive(&hspi2, &addr, &buf, 3, 100);
+////	while(HAL_SPI_GetState(&hspi2) != HAL_SPI_STATE_READY);
+//	HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);		// pull CS high
+//	myprintf("data: %d %d ", *buf, buf[1]);
+//	HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -379,17 +338,23 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : SD_DET_Pin */
+  GPIO_InitStruct.Pin = SD_DET_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(SD_DET_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : INA_CS_Pin */
   GPIO_InitStruct.Pin = INA_CS_Pin;

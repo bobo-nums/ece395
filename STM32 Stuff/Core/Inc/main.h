@@ -54,10 +54,12 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-
+void myprintf(const char *fmt, ...);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define SD_DET_Pin GPIO_PIN_3
+#define SD_DET_GPIO_Port GPIOE
 #define INA_CS_Pin GPIO_PIN_10
 #define INA_CS_GPIO_Port GPIOD
 #define SD_CS_Pin GPIO_PIN_1

@@ -36,7 +36,7 @@
 
 // ADC_Config
 #define MODE 			(0x9 >> 12)		// continuous bus voltage
-#define VBUSCT			(0x1 >> 9		// 84us
+#define VBUSCT			(0x1 >> 9)		// 84us
 #define VSHCT			(0x1 >> 6)		// 84us
 #define VTCT			(0x1 >> 3)		// 84us
 #define AVG				(0x2)			// 16 avg count
