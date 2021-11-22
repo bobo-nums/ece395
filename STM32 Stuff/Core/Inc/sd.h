@@ -8,20 +8,11 @@
 #ifndef INC_SD_H_
 #define INC_SD_H_
 
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-
-#include "fatfs.h"
 #include "ff.h"
-#include "ina239.h"
 #include "main.h"
-#include "stm32f4xx_hal.h"
 
-void SD_mount(FATFS *FatFs);
+void SD_mount(FATFS* FatFs);
 UINT SD_write(const TCHAR* path, BYTE mode, const char* buf, UINT btw);
-// some function to write new col, new row?
-UINT SD_csv_write_row();
 void SD_unmount();
 
 #endif /* INC_SD_H_ */

@@ -8,6 +8,7 @@
 #ifndef INC_INA239_H_
 #define INC_INA239_H_
 
+#include "main.h"
 #include "stm32f4xx_hal.h"
 
 // INA239-Q1 Registers
@@ -45,8 +46,8 @@
 #define INA_READ		1
 #define INA_WRITE		0
 
-void INA_SPI_init(SPI_HandleTypeDef* spi);
-void INA_SPI_write(SPI_HandleTypeDef* spi, uint8_t addr, uint16_t* buf);
-void INA_SPI_read(SPI_HandleTypeDef* spi, uint8_t addr, uint8_t* buf, uint32_t count);
+void INA_init(SPI_HandleTypeDef* spi);
+void INA_write(SPI_HandleTypeDef* spi, uint8_t addr, uint16_t* buf);
+void INA_read(SPI_HandleTypeDef* spi, uint8_t addr, uint8_t* buf, uint32_t count);
 
 #endif /* INC_INA239_H_ */
