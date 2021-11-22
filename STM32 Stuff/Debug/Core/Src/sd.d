@@ -1,4 +1,4 @@
-Core/Src/sd.o: ../Core/Src/sd.c ../Core/Inc/sd.h ../FATFS/App/fatfs.h \
+Core/Src/sd.o: ../Core/Src/sd.c ../Core/Inc/sd.h \
  ../Middlewares/Third_Party/FatFs/src/ff.h \
  ../Middlewares/Third_Party/FatFs/src/integer.h ../FATFS/Target/ffconf.h \
  ../Core/Inc/main.h ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
@@ -30,14 +30,9 @@ Core/Src/sd.o: ../Core/Src/sd.c ../Core/Inc/sd.h ../FATFS/App/fatfs.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rtc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
- ../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h \
- ../Middlewares/Third_Party/FatFs/src/diskio.h \
- ../Middlewares/Third_Party/FatFs/src/ff.h ../FATFS/Target/user_diskio.h \
- ../Core/Inc/ina239.h ../Core/Inc/main.h
+ ../Core/Inc/main.h
 
 ../Core/Inc/sd.h:
-
-../FATFS/App/fatfs.h:
 
 ../Middlewares/Third_Party/FatFs/src/ff.h:
 
@@ -104,15 +99,5 @@ Core/Src/sd.o: ../Core/Src/sd.c ../Core/Inc/sd.h ../FATFS/App/fatfs.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h:
 
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h:
-
-../Middlewares/Third_Party/FatFs/src/ff_gen_drv.h:
-
-../Middlewares/Third_Party/FatFs/src/diskio.h:
-
-../Middlewares/Third_Party/FatFs/src/ff.h:
-
-../FATFS/Target/user_diskio.h:
-
-../Core/Inc/ina239.h:
 
 ../Core/Inc/main.h:
