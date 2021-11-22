@@ -15,7 +15,7 @@ void SD_mount(FATFS* FatFs) {
         myprintf("waiting to init");
         HAL_Delay(1000);
     }
-    HAL_Delay(200);  // short delay to let SD card mount
+    // HAL_Delay(200);  // short delay to let SD card mount
 
     // Open the file system
     fres = f_mount(FatFs, "", 1);  // 1=mount now
@@ -26,6 +26,7 @@ void SD_mount(FATFS* FatFs) {
 }
 
 UINT SD_write(const TCHAR* path, BYTE mode, const char* buf, UINT btw) {
+    HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
     FIL fil;       // file handle
     FRESULT fres;  // result after operations
     UINT bytesWrote;
@@ -42,9 +43,10 @@ UINT SD_write(const TCHAR* path, BYTE mode, const char* buf, UINT btw) {
         while (1);
     }
     f_close(&fil);  // close file
+    HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_SET);
     return bytesWrote;
 }
 
-void SD_unmount() { 
+void SD_unmount() {
     f_mount(NULL, "", 0);
 }

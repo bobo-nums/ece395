@@ -83,12 +83,13 @@ void myprintf(const char *fmt, ...) {
   HAL_UART_Transmit(&huart2, (uint8_t*)buffer, len, -1);
 }
 
-void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time){    
+void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time, uint16_t hall_data){    
     FATFS FatFs;
     SD_mount(&FatFs);
-    char buf[256] = "%02d:%02d:%02d\n";
+    char buf[256] = "%02d:%02d:%02d, %d\n";
     char buf2[256];
-    sprintf(buf2, buf, time->Hours, time->Minutes, time->Seconds);
+    sprintf(buf2, buf, time->Hours, time->Minutes, time->Seconds, hall_data);
+    myprintf("hall: %d", hall_data);
     int btw = strlen(buf2);
     SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_APPEND, buf2, btw);
     SD_unmount();
@@ -100,6 +101,7 @@ void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time){
 //     *result ^= grey;
 //     *result ^= dec;
 //     grey &= dec;
+//   }
 // }
 
 // void binary2grey(uint16_t bin, uint16_t *result){
@@ -141,8 +143,7 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
-  INA_init(&hspi3);
-
+  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
   FATFS FatFs;
   SD_mount(&FatFs);
 
@@ -189,7 +190,10 @@ int main(void)
     uint32_t current_second = HAL_GetTick();
     if (current_second - last_second > 1000){
         // 1 second has elapsed, log time
-        todo_on_alarm(&hrtc, &myTime);
+        uint16_t hall_data;
+        HALL_read(&hspi2, &hall_data);
+        hall_data = hall_data/182;
+        todo_on_alarm(&hrtc, &myTime, hall_data);
         last_second = current_second;
     }
 
