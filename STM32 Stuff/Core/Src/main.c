@@ -161,6 +161,7 @@ int main(void)
   // if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
   //   rtc_set_time(&hrtc);
   // }
+  BME_init(&hspi3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -187,8 +188,8 @@ int main(void)
 
     float temp;
     temp = BME_readTemperature(&hspi3);
-    myprintf("%f   ", temp);
-    HAL_Delay(500);
+    myprintf("%.6f   ", temp);
+    HAL_Delay(1000);
 
     // RTC_TimeTypeDef myTime;
     // RTC_DateTypeDef myDate;
