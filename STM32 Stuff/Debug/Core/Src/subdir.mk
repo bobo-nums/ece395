@@ -5,6 +5,7 @@
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
+../Core/Src/bme.c \
 ../Core/Src/hall.c \
 ../Core/Src/ina239.c \
 ../Core/Src/main.c \
@@ -17,6 +18,7 @@ C_SRCS += \
 ../Core/Src/system_stm32f4xx.c 
 
 OBJS += \
+./Core/Src/bme.o \
 ./Core/Src/hall.o \
 ./Core/Src/ina239.o \
 ./Core/Src/main.o \
@@ -29,6 +31,7 @@ OBJS += \
 ./Core/Src/system_stm32f4xx.o 
 
 C_DEPS += \
+./Core/Src/bme.d \
 ./Core/Src/hall.d \
 ./Core/Src/ina239.d \
 ./Core/Src/main.d \

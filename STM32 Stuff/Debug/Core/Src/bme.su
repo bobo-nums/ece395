@@ -1,0 +1,2 @@
+bme.c:10:10:BME_read24	24	static
+bme.c:20:7:BME_readTemperature	32	static

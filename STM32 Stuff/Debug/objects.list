@@ -1,3 +1,4 @@
+"./Core/Src/bme.o"
 "./Core/Src/hall.o"
 "./Core/Src/ina239.o"
 "./Core/Src/main.o"

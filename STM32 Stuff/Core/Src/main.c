@@ -30,6 +30,7 @@
 #include "sd.h"
 #include "rtc.h"
 #include "hall.h"
+#include "bme.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -143,23 +144,23 @@ int main(void)
   MX_SPI2_Init();
   /* USER CODE BEGIN 2 */
 
-  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
-  FATFS FatFs;
-  SD_mount(&FatFs);
+  // HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
+  // FATFS FatFs;
+  // SD_mount(&FatFs);
 
   // Write header
-  char buf[256] = "Time, Angle\n";
-  int btw = strlen(buf);
-  UINT bytesWrote;
-  bytesWrote = SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, buf, btw);
-  myprintf("Wrote %i bytes to 'write.csv'!\r\n", bytesWrote);
+  // char buf[256] = "Time, Angle\n";
+  // int btw = strlen(buf);
+  // UINT bytesWrote;
+  // bytesWrote = SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, buf, btw);
+  // myprintf("Wrote %i bytes to 'write.csv'!\r\n", bytesWrote);
 
-  SD_unmount();
+  // SD_unmount();
 
   // reset timer to 0
-  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
-    rtc_set_time(&hrtc);
-  }
+  // if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
+  //   rtc_set_time(&hrtc);
+  // }
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -184,18 +185,23 @@ int main(void)
     // myprintf("%x %x %x %x | ", buf[0], buf[1], buf[2], buf[3]);
     // HAL_Delay(500);
 
-    RTC_TimeTypeDef myTime;
-    RTC_DateTypeDef myDate;
-    rtc_get_time(&hrtc, &myDate, &myTime);
-    uint32_t current_second = HAL_GetTick();
-    if (current_second - last_second > 1000){
-        // 1 second has elapsed, log time
-        uint16_t hall_data;
-        HALL_read(&hspi2, &hall_data);
-        hall_data = hall_data/182;
-        todo_on_alarm(&hrtc, &myTime, hall_data);
-        last_second = current_second;
-    }
+    float temp;
+    temp = BME_readTemperature(&hspi3);
+    myprintf("%f   ", temp);
+    HAL_Delay(500);
+
+    // RTC_TimeTypeDef myTime;
+    // RTC_DateTypeDef myDate;
+    // rtc_get_time(&hrtc, &myDate, &myTime);
+    // uint32_t current_second = HAL_GetTick();
+    // if (current_second - last_second > 1000){
+    //     // 1 second has elapsed, log time
+    //     uint16_t hall_data;
+    //     HALL_read(&hspi2, &hall_data);
+    //     hall_data = hall_data/182;
+    //     todo_on_alarm(&hrtc, &myTime, hall_data);
+    //     last_second = current_second;
+    // }
 
     // testing init
     // INA_init(&hspi3);
@@ -456,7 +462,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(HALL_CS_GPIO_Port, HALL_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, BME_CS_Pin|HALL_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
@@ -474,12 +480,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(INA_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : HALL_CS_Pin */
-  GPIO_InitStruct.Pin = HALL_CS_Pin;
+  /*Configure GPIO pins : BME_CS_Pin HALL_CS_Pin */
+  GPIO_InitStruct.Pin = BME_CS_Pin|HALL_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(HALL_CS_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : SD_CS_Pin */
   GPIO_InitStruct.Pin = SD_CS_Pin;
