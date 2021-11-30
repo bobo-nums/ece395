@@ -32,7 +32,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -62,6 +62,10 @@ void myprintf(const char *fmt, ...);
 #define SD_DET_GPIO_Port GPIOE
 #define INA_CS_Pin GPIO_PIN_10
 #define INA_CS_GPIO_Port GPIOD
+#define BME_CS_Pin GPIO_PIN_7
+#define BME_CS_GPIO_Port GPIOC
+#define HALL_CS_Pin GPIO_PIN_9
+#define HALL_CS_GPIO_Port GPIOC
 #define SD_CS_Pin GPIO_PIN_1
 #define SD_CS_GPIO_Port GPIOE
 /* USER CODE BEGIN Private defines */

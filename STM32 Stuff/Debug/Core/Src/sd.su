@@ -1,3 +1,3 @@
 sd.c:10:6:SD_mount	24	static
-sd.c:26:6:SD_write	600	static
-sd.c:48:6:SD_unmount	8	static
+sd.c:28:6:SD_write	600	static
+sd.c:50:6:SD_unmount	8	static

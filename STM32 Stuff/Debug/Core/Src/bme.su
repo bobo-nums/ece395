@@ -1,0 +1,11 @@
+bme.c:10:6:BME_init	16	static
+bme.c:25:6:BME_write8	24	static
+bme.c:34:6:isReadingCalibration	24	static
+bme.c:39:6:readCoefficients	16	static
+bme.c:70:6:setSampling	16	static
+bme.c:77:10:BME_read16_LE	24	static
+bme.c:82:9:BME_readS16_LE	16	static
+bme.c:86:9:BME_read8	24	static
+bme.c:96:10:BME_read16	24	static
+bme.c:106:10:BME_read24	24	static
+bme.c:116:7:BME_readTemperature	40	static
