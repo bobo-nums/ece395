@@ -78,8 +78,6 @@ typedef struct {
   int16_t dig_H5; ///< humidity compensation value
   int8_t dig_H6;  ///< humidity compensation value
 } bme280_calib_data;
-// /*=========================================================================*/
-
 
   /**************************************************************************/
   /*!
@@ -134,7 +132,6 @@ typedef struct {
     STANDBY_MS_500 = 0b100,
     STANDBY_MS_1000 = 0b101
   };
-
 
 bme280_calib_data _bme280_calib; //!< here calibration data is stored
 

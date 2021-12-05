@@ -50,6 +50,7 @@
 /* Private variables ---------------------------------------------------------*/
 RTC_HandleTypeDef hrtc;
 
+SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi3;
 
@@ -67,6 +68,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_RTC_Init(void);
 static void MX_SPI2_Init(void);
+static void MX_SPI1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -84,30 +86,18 @@ void myprintf(const char *fmt, ...) {
   HAL_UART_Transmit(&huart2, (uint8_t*)buffer, len, -1);
 }
 
-void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time, uint16_t hall_data){    
+void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time, uint16_t hall_data, float temp){
     FATFS FatFs;
     SD_mount(&FatFs);
-    char buf[256] = "%02d:%02d:%02d, %d\n";
+    char buf[256] = "%02d:%02d:%02d, %d, %.2f\n";
     char buf2[256];
-    sprintf(buf2, buf, time->Hours, time->Minutes, time->Seconds, hall_data);
-    myprintf("hall: %d", hall_data);
+    sprintf(buf2, buf, time->Hours, time->Minutes, time->Seconds, hall_data, temp);
+    myprintf("hall: %d | temp: %.2f        ", hall_data, temp);
     int btw = strlen(buf2);
-    SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_APPEND, buf2, btw);
+    SD_write("data.csv", FA_READ | FA_WRITE | FA_OPEN_APPEND, buf2, btw);
     SD_unmount();
 }
 
-// void grey2binary(uint16_t grey, uint16_t *result){
-//   while (grey != 0) {
-//     int dec = grey - 1;
-//     *result ^= grey;
-//     *result ^= dec;
-//     grey &= dec;
-//   }
-// }
-
-// void binary2grey(uint16_t bin, uint16_t *result){
-//   *result = bin ^ (bin >> 1);
-// }
 /* USER CODE END 0 */
 
 /**
@@ -142,26 +132,29 @@ int main(void)
   MX_SPI3_Init();
   MX_RTC_Init();
   MX_SPI2_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
-  // HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
-  // FATFS FatFs;
-  // SD_mount(&FatFs);
+  BME_init(&hspi1);
+  HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
+  FATFS FatFs;
+  SD_mount(&FatFs);
 
   // Write header
-  // char buf[256] = "Time, Angle\n";
-  // int btw = strlen(buf);
-  // UINT bytesWrote;
-  // bytesWrote = SD_write("write.csv", FA_READ | FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, buf, btw);
-  // myprintf("Wrote %i bytes to 'write.csv'!\r\n", bytesWrote);
+  char buf[256] = "Time, Angle, Temperature\n";
+  int btw = strlen(buf);
+  UINT bytesWrote;
+  bytesWrote = SD_write("data.csv", FA_READ | FA_WRITE | FA_OPEN_ALWAYS | FA_CREATE_ALWAYS, buf, btw);
+  myprintf("Wrote %i bytes to 'data.csv'!\r\n", bytesWrote);
 
-  // SD_unmount();
+  SD_unmount();
 
   // reset timer to 0
-  // if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
-  //   rtc_set_time(&hrtc);
-  // }
-  // BME_init(&hspi3);
+  if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
+    rtc_set_time(&hrtc);
+  }
+  uint16_t hall_data;
+  float temp = 0.0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -171,38 +164,30 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-
-    // uint16_t buf[2];
-    // uint16_t result0;
-    // uint16_t result1;
-    // HALL_read(&hspi2, &buf[0]);
-    // grey2binary(buf[0], &result0);
-    // grey2binary(buf[1], &result1);
-    // myprintf("grey: %x %x bin: %x %x | ", buf[0], buf[1], result0, result1);
-    // HAL_Delay(500);
-
-    // uint8_t buf[4];
-    // HALL_read(&hspi2, &buf[0]);
-    // myprintf("%x %x %x %x | ", buf[0], buf[1], buf[2], buf[3]);
+    // uint16_t hall_data;
+    // HALL_read(&hspi2, &hall_data);
+    // hall_data = hall_data/182;
+    // myprintf("data: %d", hall_data);
     // HAL_Delay(500);
 
     // float temp;
     // temp = BME_readTemperature(&hspi3);
-    // myprintf("%.6f   ", temp);
+    // myprintf("%.2f   ", temp);
     // HAL_Delay(1000);
 
-    // RTC_TimeTypeDef myTime;
-    // RTC_DateTypeDef myDate;
-    // rtc_get_time(&hrtc, &myDate, &myTime);
-    // uint32_t current_second = HAL_GetTick();
-    // if (current_second - last_second > 1000){
-    //     // 1 second has elapsed, log time
-    //     uint16_t hall_data;
-    //     HALL_read(&hspi2, &hall_data);
-    //     hall_data = hall_data/182;
-    //     todo_on_alarm(&hrtc, &myTime, hall_data);
-    //     last_second = current_second;
-    // }
+    RTC_TimeTypeDef myTime;
+    RTC_DateTypeDef myDate;
+    rtc_get_time(&hrtc, &myDate, &myTime);
+    // HAL_Delay(200);
+    uint32_t current_second = HAL_GetTick();
+    if (current_second - last_second > 1000){
+        // 1 second has elapsed, log stuff
+        HALL_read(&hspi2, &hall_data);
+        hall_data = hall_data/182;
+        temp = BME_readTemperature(&hspi1);
+        todo_on_alarm(&hrtc, &myTime, hall_data, temp);
+        last_second = current_second;
+    }
   }
   /* USER CODE END 3 */
 }
@@ -306,6 +291,44 @@ static void MX_RTC_Init(void)
   /* USER CODE BEGIN RTC_Init 2 */
   HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR1, 0x32F2); // backup register 
   /* USER CODE END RTC_Init 2 */
+
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
 
 }
 
