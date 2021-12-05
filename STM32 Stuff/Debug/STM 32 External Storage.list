@@ -37,6 +37,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  16 .debug_ranges 00000e58  00000000  00000000  0003d938  2**3
                   CONTENTS, READONLY, DEBUGGING, OCTETS
+<<<<<<< HEAD
+ 17 .debug_macro  00004abc  00000000  00000000  00037f28  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 18 .debug_line   000109a9  00000000  00000000  0003c9e4  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 19 .debug_str    000cd082  00000000  00000000  0004d38d  2**0
+                  CONTENTS, READONLY, DEBUGGING, OCTETS
+ 20 .comment      00000053  00000000  00000000  0011a40f  2**0
+                  CONTENTS, READONLY
+ 21 .debug_frame  00004554  00000000  00000000  0011a464  2**2
+=======
  17 .debug_macro  00023eb6  00000000  00000000  0003e790  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  18 .debug_line   00015e9d  00000000  00000000  00062646  2**0
@@ -46,6 +57,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
  20 .comment      00000053  00000000  00000000  00146681  2**0
                   CONTENTS, READONLY
  21 .debug_frame  0000511c  00000000  00000000  001466d4  2**2
+>>>>>>> main
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2022,6 +2034,33 @@ int main(void)
  8001456:	f000 fb63 	bl	8001b20 <SD_unmount>
 
   // reset timer to 0
+<<<<<<< HEAD
+  // if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
+  //   rtc_set_time(&hrtc);
+  // }
+  BME_init(&hspi3);
+ 80012aa:	480a      	ldr	r0, [pc, #40]	; (80012d4 <main+0x50>)
+ 80012ac:	f7ff fdf8 	bl	8000ea0 <BME_init>
+    // HALL_read(&hspi2, &buf[0]);
+    // myprintf("%x %x %x %x | ", buf[0], buf[1], buf[2], buf[3]);
+    // HAL_Delay(500);
+
+    float temp;
+    temp = BME_readTemperature(&hspi3);
+ 80012b0:	4808      	ldr	r0, [pc, #32]	; (80012d4 <main+0x50>)
+ 80012b2:	f7ff ff53 	bl	800115c <BME_readTemperature>
+ 80012b6:	ed87 0a01 	vstr	s0, [r7, #4]
+    myprintf("%.6f   ", temp);
+ 80012ba:	6878      	ldr	r0, [r7, #4]
+ 80012bc:	f7ff f944 	bl	8000548 <__aeabi_f2d>
+ 80012c0:	4602      	mov	r2, r0
+ 80012c2:	460b      	mov	r3, r1
+ 80012c4:	4804      	ldr	r0, [pc, #16]	; (80012d8 <main+0x54>)
+ 80012c6:	f7ff ffb7 	bl	8001238 <myprintf>
+    HAL_Delay(1000);
+ 80012ca:	f44f 707a 	mov.w	r0, #1000	; 0x3e8
+ 80012ce:	f000 fcc1 	bl	8001c54 <HAL_Delay>
+=======
   if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
  800145a:	2101      	movs	r1, #1
  800145c:	4828      	ldr	r0, [pc, #160]	; (8001500 <main+0x144>)
@@ -2091,6 +2130,7 @@ int main(void)
  80014e0:	4a08      	ldr	r2, [pc, #32]	; (8001504 <main+0x148>)
  80014e2:	f8d7 3350 	ldr.w	r3, [r7, #848]	; 0x350
  80014e6:	6013      	str	r3, [r2, #0]
+>>>>>>> main
   {
  80014e8:	e7c5      	b.n	8001476 <main+0xba>
  80014ea:	bf00      	nop
@@ -2779,10 +2819,17 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, AMT_CS_Pin|BME_CS_Pin|HALL_CS_Pin, GPIO_PIN_RESET);
+<<<<<<< HEAD
+ 800163a:	2200      	movs	r2, #0
+ 800163c:	f44f 7130 	mov.w	r1, #704	; 0x2c0
+ 8001640:	4823      	ldr	r0, [pc, #140]	; (80016d0 <MX_GPIO_Init+0x144>)
+ 8001642:	f000 fdad 	bl	80021a0 <HAL_GPIO_WritePin>
+=======
  80018da:	2200      	movs	r2, #0
  80018dc:	f44f 7130 	mov.w	r1, #704	; 0x2c0
  80018e0:	4823      	ldr	r0, [pc, #140]	; (8001970 <MX_GPIO_Init+0x144>)
  80018e2:	f000 fed5 	bl	8002690 <HAL_GPIO_WritePin>
+>>>>>>> main
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
@@ -2821,6 +2868,17 @@ static void MX_GPIO_Init(void)
  8001916:	2300      	movs	r3, #0
  8001918:	623b      	str	r3, [r7, #32]
   HAL_GPIO_Init(INA_CS_GPIO_Port, &GPIO_InitStruct);
+<<<<<<< HEAD
+ 800167a:	f107 0314 	add.w	r3, r7, #20
+ 800167e:	4619      	mov	r1, r3
+ 8001680:	4812      	ldr	r0, [pc, #72]	; (80016cc <MX_GPIO_Init+0x140>)
+ 8001682:	f000 fbf1 	bl	8001e68 <HAL_GPIO_Init>
+
+  /*Configure GPIO pins : AMT_CS_Pin BME_CS_Pin HALL_CS_Pin */
+  GPIO_InitStruct.Pin = AMT_CS_Pin|BME_CS_Pin|HALL_CS_Pin;
+ 8001686:	f44f 7330 	mov.w	r3, #704	; 0x2c0
+ 800168a:	617b      	str	r3, [r7, #20]
+=======
  800191a:	f107 0314 	add.w	r3, r7, #20
  800191e:	4619      	mov	r1, r3
  8001920:	4812      	ldr	r0, [pc, #72]	; (800196c <MX_GPIO_Init+0x140>)
@@ -2830,6 +2888,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = AMT_CS_Pin|BME_CS_Pin|HALL_CS_Pin;
  8001926:	f44f 7330 	mov.w	r3, #704	; 0x2c0
  800192a:	617b      	str	r3, [r7, #20]
+>>>>>>> main
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
  800192c:	2301      	movs	r3, #1
  800192e:	61bb      	str	r3, [r7, #24]
@@ -4059,6 +4118,57 @@ void SystemInit(void)
   SCB->VTOR = VECT_TAB_BASE_ADDRESS | VECT_TAB_OFFSET; /* Vector Table Relocation in Internal SRAM */
 #endif /* USER_VECT_TAB_ADDRESS */
 }
+<<<<<<< HEAD
+ 8001b0c:	bf00      	nop
+ 8001b0e:	46bd      	mov	sp, r7
+ 8001b10:	f85d 7b04 	ldr.w	r7, [sp], #4
+ 8001b14:	4770      	bx	lr
+ 8001b16:	bf00      	nop
+ 8001b18:	e000ed00 	.word	0xe000ed00
+
+08001b1c <Reset_Handler>:
+ 8001b1c:	f8df d034 	ldr.w	sp, [pc, #52]	; 8001b54 <LoopFillZerobss+0x12>
+ 8001b20:	480d      	ldr	r0, [pc, #52]	; (8001b58 <LoopFillZerobss+0x16>)
+ 8001b22:	490e      	ldr	r1, [pc, #56]	; (8001b5c <LoopFillZerobss+0x1a>)
+ 8001b24:	4a0e      	ldr	r2, [pc, #56]	; (8001b60 <LoopFillZerobss+0x1e>)
+ 8001b26:	2300      	movs	r3, #0
+ 8001b28:	e002      	b.n	8001b30 <LoopCopyDataInit>
+
+08001b2a <CopyDataInit>:
+ 8001b2a:	58d4      	ldr	r4, [r2, r3]
+ 8001b2c:	50c4      	str	r4, [r0, r3]
+ 8001b2e:	3304      	adds	r3, #4
+
+08001b30 <LoopCopyDataInit>:
+ 8001b30:	18c4      	adds	r4, r0, r3
+ 8001b32:	428c      	cmp	r4, r1
+ 8001b34:	d3f9      	bcc.n	8001b2a <CopyDataInit>
+ 8001b36:	4a0b      	ldr	r2, [pc, #44]	; (8001b64 <LoopFillZerobss+0x22>)
+ 8001b38:	4c0b      	ldr	r4, [pc, #44]	; (8001b68 <LoopFillZerobss+0x26>)
+ 8001b3a:	2300      	movs	r3, #0
+ 8001b3c:	e001      	b.n	8001b42 <LoopFillZerobss>
+
+08001b3e <FillZerobss>:
+ 8001b3e:	6013      	str	r3, [r2, #0]
+ 8001b40:	3204      	adds	r2, #4
+
+08001b42 <LoopFillZerobss>:
+ 8001b42:	42a2      	cmp	r2, r4
+ 8001b44:	d3fb      	bcc.n	8001b3e <FillZerobss>
+ 8001b46:	f7ff ffd7 	bl	8001af8 <SystemInit>
+ 8001b4a:	f003 f957 	bl	8004dfc <__libc_init_array>
+ 8001b4e:	f7ff fb99 	bl	8001284 <main>
+ 8001b52:	4770      	bx	lr
+ 8001b54:	20020000 	.word	0x20020000
+ 8001b58:	20000000 	.word	0x20000000
+ 8001b5c:	200001f4 	.word	0x200001f4
+ 8001b60:	080080fc 	.word	0x080080fc
+ 8001b64:	200001f4 	.word	0x200001f4
+ 8001b68:	200008e8 	.word	0x200008e8
+
+08001b6c <ADC_IRQHandler>:
+ 8001b6c:	e7fe      	b.n	8001b6c <ADC_IRQHandler>
+=======
  8001fcc:	bf00      	nop
  8001fce:	46bd      	mov	sp, r7
  8001fd0:	f85d 7b04 	ldr.w	r7, [sp], #4
@@ -4108,6 +4218,7 @@ void SystemInit(void)
 
 0800202c <ADC_IRQHandler>:
  800202c:	e7fe      	b.n	800202c <ADC_IRQHandler>
+>>>>>>> main
 	...
 
 08002030 <HAL_Init>:

@@ -1,0 +1,4 @@
+amt.c:10:9:AMT_RW	32	static
+amt.c:18:10:AMT_getPos	48	static
+amt.c:42:6:AMT_setZero	24	static
+amt.c:52:6:AMT_reset	24	static
