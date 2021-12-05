@@ -1,6 +1,6 @@
 main.c:78:6:myprintf	16	static
 main.c:89:6:todo_on_alarm	1136	static
-main.c:107:5:main	856	static
+main.c:107:5:main	888	static
 main.c:200:6:SystemClock_Config	88	static
 main.c:241:13:MX_RTC_Init	32	static
 main.c:303:13:MX_SPI1_Init	8	static

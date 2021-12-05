@@ -92,7 +92,7 @@ void todo_on_alarm(RTC_HandleTypeDef *hrtc, RTC_TimeTypeDef* time, uint16_t hall
     char buf[256] = "%02d:%02d:%02d, %d, %.2f\n";
     char buf2[256];
     sprintf(buf2, buf, time->Hours, time->Minutes, time->Seconds, hall_data, temp);
-    myprintf("hall: %d | temp: %.2f        ", hall_data, temp);
+    myprintf("hall: %d | temp: %.2f  ", hall_data, temp);
     int btw = strlen(buf2);
     SD_write("data.csv", FA_READ | FA_WRITE | FA_OPEN_APPEND, buf2, btw);
     SD_unmount();
@@ -169,26 +169,26 @@ int main(void)
     // myprintf("data: %d", hall_data);
     // HAL_Delay(500);
 
-    float temp;
-    temp = BME_readTemperature(&hspi1);
-    myprintf("%.2f   ", temp);
-    HAL_Delay(1000);
+    // float temp;
+    // temp = BME_readTemperature(&hspi1);
+    // myprintf("%.2f   ", temp);
+    // HAL_Delay(1000);
 
-    // RTC_TimeTypeDef myTime;
-    // RTC_DateTypeDef myDate;
-    // rtc_get_time(&hrtc, &myDate, &myTime);
-    // uint16_t hall_data;
-    // float temp = 0.0;
-    // // HAL_Delay(200);
-    // uint32_t current_second = HAL_GetTick();
-    // if (current_second - last_second > 1000){
-    //     // 1 second has elapsed, log stuff
-    //     HALL_read(&hspi2, &hall_data);
-    //     hall_data = hall_data/182;
-    //     temp = BME_readTemperature(&hspi1);
-    //     todo_on_alarm(&hrtc, &myTime, hall_data, temp);
-    //     last_second = current_second;
-    // }
+    RTC_TimeTypeDef myTime;
+    RTC_DateTypeDef myDate;
+    rtc_get_time(&hrtc, &myDate, &myTime);
+    uint16_t hall_data;
+    float temp = 0.0;
+    // HAL_Delay(200);
+    uint32_t current_second = HAL_GetTick();
+    if (current_second - last_second > 1000){
+        // 1 second has elapsed, log stuff
+        HALL_read(&hspi2, &hall_data);
+        hall_data = hall_data/182;
+        temp = BME_readTemperature(&hspi1);
+        todo_on_alarm(&hrtc, &myTime, hall_data, temp);
+        last_second = current_second;
+    }
   }
   /* USER CODE END 3 */
 }
