@@ -135,6 +135,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_Delay(200);
   BME_init(&hspi1);
   HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);  // idk why i need this lol but doesnt initialize sd without
   FATFS FatFs;
@@ -153,8 +154,6 @@ int main(void)
   if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
     rtc_set_time(&hrtc);
   }
-  uint16_t hall_data;
-  float temp = 0.0;
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -170,24 +169,26 @@ int main(void)
     // myprintf("data: %d", hall_data);
     // HAL_Delay(500);
 
-    // float temp;
-    // temp = BME_readTemperature(&hspi3);
-    // myprintf("%.2f   ", temp);
-    // HAL_Delay(1000);
+    float temp;
+    temp = BME_readTemperature(&hspi1);
+    myprintf("%.2f   ", temp);
+    HAL_Delay(1000);
 
-    RTC_TimeTypeDef myTime;
-    RTC_DateTypeDef myDate;
-    rtc_get_time(&hrtc, &myDate, &myTime);
-    // HAL_Delay(200);
-    uint32_t current_second = HAL_GetTick();
-    if (current_second - last_second > 1000){
-        // 1 second has elapsed, log stuff
-        HALL_read(&hspi2, &hall_data);
-        hall_data = hall_data/182;
-        temp = BME_readTemperature(&hspi1);
-        todo_on_alarm(&hrtc, &myTime, hall_data, temp);
-        last_second = current_second;
-    }
+    // RTC_TimeTypeDef myTime;
+    // RTC_DateTypeDef myDate;
+    // rtc_get_time(&hrtc, &myDate, &myTime);
+    // uint16_t hall_data;
+    // float temp = 0.0;
+    // // HAL_Delay(200);
+    // uint32_t current_second = HAL_GetTick();
+    // if (current_second - last_second > 1000){
+    //     // 1 second has elapsed, log stuff
+    //     HALL_read(&hspi2, &hall_data);
+    //     hall_data = hall_data/182;
+    //     temp = BME_readTemperature(&hspi1);
+    //     todo_on_alarm(&hrtc, &myTime, hall_data, temp);
+    //     last_second = current_second;
+    // }
   }
   /* USER CODE END 3 */
 }
