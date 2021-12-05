@@ -161,7 +161,7 @@ int main(void)
   // if(HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR1) != 0x0000){
   //   rtc_set_time(&hrtc);
   // }
-  BME_init(&hspi3);
+  // BME_init(&hspi3);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -186,10 +186,10 @@ int main(void)
     // myprintf("%x %x %x %x | ", buf[0], buf[1], buf[2], buf[3]);
     // HAL_Delay(500);
 
-    float temp;
-    temp = BME_readTemperature(&hspi3);
-    myprintf("%.6f   ", temp);
-    HAL_Delay(1000);
+    // float temp;
+    // temp = BME_readTemperature(&hspi3);
+    // myprintf("%.6f   ", temp);
+    // HAL_Delay(1000);
 
     // RTC_TimeTypeDef myTime;
     // RTC_DateTypeDef myDate;
@@ -203,31 +203,6 @@ int main(void)
     //     todo_on_alarm(&hrtc, &myTime, hall_data);
     //     last_second = current_second;
     // }
-
-    // testing init
-    // INA_init(&hspi3);
-
-    // testing write
-    // uint16_t data;
-    // data = 0x8000;
-    // INA_write(&hspi3, CONFIG, &data);
-
-    // testing read
-    // uint8_t buf[2];
-    // INA_read(&hspi3, VBUS, &buf[0], 2);
-    // myprintf("data: %x %x", buf[0], buf[1]);
-    // HAL_Delay(1000);
-
-    // uint8_t buf[2];
-    // uint8_t addr = (DEVICE_ID << 2) | INA_READ;
-    // // myprintf("addr: %x", addr);
-    // HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
-    // HAL_SPI_Transmit(&hspi3, &addr, 1, 100);
-    // HAL_SPI_Receive(&hspi3, &buf[0], 4, 100);
-    // // HAL_SPI_TransmitReceive(&hspi3, &addr, &buf, 3, 100);
-    // HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_SET);
-    // // myprintf("data: %x %x ", buf[0], buf[1]);
-    // HAL_Delay(1000);
   }
   /* USER CODE END 3 */
 }
@@ -463,7 +438,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(INA_CS_GPIO_Port, INA_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BME_CS_Pin|HALL_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, AMT_CS_Pin|BME_CS_Pin|HALL_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SD_CS_GPIO_Port, SD_CS_Pin, GPIO_PIN_RESET);
@@ -481,8 +456,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(INA_CS_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : BME_CS_Pin HALL_CS_Pin */
-  GPIO_InitStruct.Pin = BME_CS_Pin|HALL_CS_Pin;
+  /*Configure GPIO pins : AMT_CS_Pin BME_CS_Pin HALL_CS_Pin */
+  GPIO_InitStruct.Pin = AMT_CS_Pin|BME_CS_Pin|HALL_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
