@@ -40,33 +40,8 @@ void readCoefficients(SPI_HandleTypeDef* spi){
   _bme280_calib.dig_T1 = BME_read16_LE(spi, BME280_REGISTER_DIG_T1);
   _bme280_calib.dig_T2 = BME_readS16_LE(spi, BME280_REGISTER_DIG_T2);
   _bme280_calib.dig_T3 = BME_readS16_LE(spi, BME280_REGISTER_DIG_T3);
-
-  // _bme280_calib.dig_P1 = BME_read16_LE(spi, BME280_REGISTER_DIG_P1);
-  // _bme280_calib.dig_P2 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P2);
-  // _bme280_calib.dig_P3 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P3);
-  // _bme280_calib.dig_P4 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P4);
-  // _bme280_calib.dig_P5 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P5);
-  // _bme280_calib.dig_P6 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P6);
-  // _bme280_calib.dig_P7 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P7);
-  // _bme280_calib.dig_P8 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P8);
-  // _bme280_calib.dig_P9 = BME_readS16_LE(spi, BME280_REGISTER_DIG_P9);
-
-  // _bme280_calib.dig_H1 = BME_read8(spi, BME280_REGISTER_DIG_H1);
-  // _bme280_calib.dig_H2 = BME_readS16_LE(spi, BME280_REGISTER_DIG_H2);
-  // _bme280_calib.dig_H3 = BME_read8(spi, BME280_REGISTER_DIG_H3);
-
-  // _bme280_calib.dig_H4 = ((int8_t)BME_read8(spi, BME280_REGISTER_DIG_H4) << 4) | (read8(BME280_REGISTER_DIG_H4 + 1) & 0xF);
-  // _bme280_calib.dig_H5 = ((int8_t)BME_read8(spi, BME280_REGISTER_DIG_H5 + 1) << 4) | (read8(BME280_REGISTER_DIG_H5) >> 4);
-  // _bme280_calib.dig_H6 = (int8_t)BME_read8(spi, BME280_REGISTER_DIG_H6);
 }
-/*
- void setSampling(sensor_mode mode = MODE_NORMAL,
-                   sensor_sampling tempSampling = SAMPLING_X16,
-                   sensor_sampling pressSampling = SAMPLING_X16,
-                   sensor_sampling humSampling = SAMPLING_X16,
-                   sensor_filter filter = FILTER_OFF,
-                   standby_duration duration = STANDBY_MS_0_5);
-*/
+
 void setSampling(SPI_HandleTypeDef* spi){
   BME_write8(spi, BME280_REGISTER_CONTROL, MODE_SLEEP);
   BME_write8(spi, BME280_REGISTER_CONTROLHUMID, SAMPLING_X16);

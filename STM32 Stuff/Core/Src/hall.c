@@ -14,9 +14,7 @@ void HALL_read(SPI_HandleTypeDef* spi, uint8_t* buf) {
 	data[1] = START_B_1;
 
 	HAL_GPIO_WritePin(HALL_CS_GPIO_Port, HALL_CS_Pin, GPIO_PIN_RESET);	// pull CS low
-	HAL_SPI_Transmit(spi, &data, 2, 100);					        // send 2 bytes
-	while(HAL_SPI_GetState(spi) != HAL_SPI_STATE_READY);
+	HAL_SPI_Transmit(spi, &data, 2, 100);					        	// send 2 bytes
     HAL_SPI_Receive(spi, buf, 4, 100);                                  // receieve 2 data bytes + 2 inverted data bytes
-    while(HAL_SPI_GetState(spi) != HAL_SPI_STATE_READY);
 	HAL_GPIO_WritePin(HALL_CS_GPIO_Port, HALL_CS_Pin, GPIO_PIN_SET);	// pull CS high
 }
