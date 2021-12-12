@@ -60,10 +60,6 @@ void myprintf(const char *fmt, ...);
 /* Private defines -----------------------------------------------------------*/
 #define SD_DET_Pin GPIO_PIN_3
 #define SD_DET_GPIO_Port GPIOE
-#define INA_CS_Pin GPIO_PIN_10
-#define INA_CS_GPIO_Port GPIOD
-#define AMT_CS_Pin GPIO_PIN_6
-#define AMT_CS_GPIO_Port GPIOC
 #define BME_CS_Pin GPIO_PIN_7
 #define BME_CS_GPIO_Port GPIOC
 #define HALL_CS_Pin GPIO_PIN_9

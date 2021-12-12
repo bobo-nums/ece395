@@ -1,3 +1,0 @@
-ina239.c:10:6:INA_init	24	static
-ina239.c:23:6:INA_read	24	static
-ina239.c:33:6:INA_write	32	static

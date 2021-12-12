@@ -39,8 +39,8 @@ $Comp
 L micro_sd_card_adafruit:Micro_SD_Card_Adafruit J?
 U 1 1 61515836
 P 6100 2450
-F 0 "J?" H 6930 2496 50  0000 L CNN
-F 1 "Micro_SD_Card_Adafruit" H 6930 2405 50  0000 L CNN
+F 0 "J?" H 5700 3200 50  0000 L CNN
+F 1 "Micro_SD_Card_Adafruit" H 5950 3200 50  0000 L CNN
 F 2 "" H 8150 3150 50  0001 C CNN
 F 3 "https://www.hirose.com/product/en/download_file/key_name/DM3/category/Catalog/doc_file_id/49662/?file_category_id=4&item_id=195&is_series=1" H 6100 2550 50  0001 C CNN
 	1    6100 2450

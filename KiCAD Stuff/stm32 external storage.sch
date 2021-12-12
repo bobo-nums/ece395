@@ -25,17 +25,6 @@ F 3 "http://www.st.com/st-web-ui/static/active/en/resource/technical/document/da
 	1    0    0    -1  
 $EndComp
 $Comp
-L ina239-q1:INA239-Q1 U?
-U 1 1 6150C194
-P 5150 3550
-F 0 "U?" H 5150 3515 50  0000 C CNN
-F 1 "INA239-Q1" H 5150 3424 50  0000 C CNN
-F 2 "" H 5150 3550 50  0001 C CNN
-F 3 "" H 5150 3550 50  0001 C CNN
-	1    5150 3550
-	1    0    0    -1  
-$EndComp
-$Comp
 L micro_sd_card_adafruit:Micro_SD_Card_Adafruit J?
 U 1 1 61515836
 P 6100 2450
